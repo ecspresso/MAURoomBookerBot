@@ -1,0 +1,8 @@
+/emailMessage.properties
+/users/*
+/src/.idea/
+/src/*.iml
+/out/
+/.idea/
+/*.log
+/target/

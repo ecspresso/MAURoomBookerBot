@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Kronox bokaren</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script type="text/javascript" src="script.js" defer></script>
+    </head>
+    <body>
+        <center>
+            <h2>Ange användarnamn, välj första möjliga tider (1 eller 2) eller välj två specifka tider så kommer botten försöka boka om.</h2>
+            <h2>Skicka sedan mejl till kronox@baseofoperation.se.</h2>
+        </center>
+        <div class="top-menu">
+            <p>bla bla bla</p>
+            <input type="text" placeholder="Användare...">
+            <button>Boka via mejl</button>
+            <button>Boka manuellt</button>
+        </div>
+        <table>
+            <tr>
+                <td>&nbsp;</td><td>08:15 - 10:00</td><td>10:15 - 13:00</td><td>13:15 - 15:00</td><td>15:15 - 17:00</td><td>17:15 - 20:00</td>
+            </tr>
+            <tr>
+                <td><b>NI:A0301</b><br><small>16</small></td>
+                <td><label class="switch"><input type="checkbox" id="A0301,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0301,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0301,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0301,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0301,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:A0304</b><br><small>10</small></td>
+                <td><label class="switch"><input type="checkbox" id="A0304,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0304,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0304,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0304,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0304,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:A0305</b><br><small>10</small></td>
+                <td><label class="switch"><input type="checkbox" id="A0305,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0305,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0305,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0305,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0305,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:A0322</b><br><small>15</small></td>
+                <td><label class="switch"><input type="checkbox" id="A0322,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0322,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0322,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0322,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0322,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:A0401</b><br><small>16</small></td>
+                <td><label class="switch"><input type="checkbox" id="A0401,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0401,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0401,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0401,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0401,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:A0404</b><br><small>10</small></td>
+                <td><label class="switch"><input type="checkbox" id="A0404,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0404,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0404,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0404,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0404,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:A0405</b><br><small>10</small></td>
+                <td><label class="switch"><input type="checkbox" id="A0405,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0405,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0405,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0405,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0405,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:A0422</b><br><small>15</small></td>
+                <td><label class="switch"><input type="checkbox" id="A0422,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0422,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0422,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0422,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0422,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:A0515</b><br><small>10</small></td>
+                <td><label class="switch"><input type="checkbox" id="A0515,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0515,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0515,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0515,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="A0515,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:B0303</b><br><small>15</small></td>
+                <td><label class="switch"><input type="checkbox" id="B0303,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0303,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0303,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0303,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0303,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:B0305</b><br><small>15</small></td>
+                <td><label class="switch"><input type="checkbox" id="B0305,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0305,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0305,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0305,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0305,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:B0321</b><br><small>8</small></td>
+                <td><label class="switch"><input type="checkbox" id="B0321,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0321,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0321,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0321,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="B0321,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:C0301</b><br><small>20</small></td>
+                <td><label class="switch"><input type="checkbox" id="C0301,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0301,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0301,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0301,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0301,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:C0305</b><br><small>10</small></td>
+                <td><label class="switch"><input type="checkbox" id="C0305,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0305,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0305,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0305,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0305,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:C0306</b><br><small>16</small></td>
+                <td><label class="switch"><input type="checkbox" id="C0306,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0306,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0306,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0306,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0306,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:C0309</b><br><small>16</small></td>
+                <td><label class="switch"><input type="checkbox" id="C0309,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0309,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0309,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0309,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0309,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:C0312</b><br><small>16</small></td>
+                <td><label class="switch"><input type="checkbox" id="C0312,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0312,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0312,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0312,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0312,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:C0325</b><br><small>8</small></td>
+                <td><label class="switch"><input type="checkbox" id="C0325,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0325,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0325,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0325,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0325,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+            <tr>
+                <td><b>NI:C0401</b><br><small>10</small></td>
+                <td><label class="switch"><input type="checkbox" id="C0401,1" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0401,2" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0401,3" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0401,4" onclick="check(this)"><span class="slider"></span></label></td>
+                <td><label class="switch"><input type="checkbox" id="C0401,5" onclick="check(this)"><span class="slider"></span></label></td>
+            </tr>
+        </table>
+    </body>
+</html>
