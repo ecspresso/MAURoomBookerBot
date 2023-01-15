@@ -344,7 +344,7 @@ public class Logger implements org.slf4j.Logger {
     public void error(String format, Object arg1, Object arg2) {
         logger.error(format, arg1, arg2);
         StringBuilder sb = new StringBuilder(format);
-        String msg = format.replaceFirst("{}", arg1.toString()).replaceFirst("{}", arg2.toString());
+        String msg = format.replaceFirst("\\{}", arg1.toString()).replaceFirst("\\{}", arg2.toString());
         sendEmail(msg);
     }
 
@@ -368,7 +368,7 @@ public class Logger implements org.slf4j.Logger {
         StringBuilder msg = new StringBuilder().append("Stacktrace:").append("\n");
 
         for (StackTraceElement traceElement : t.getStackTrace())  {
-            msg.append("\tat ").append(traceElement);
+            msg.append("\n\tat ").append(traceElement);
         }
 
         sendEmail(subject, msg.toString());

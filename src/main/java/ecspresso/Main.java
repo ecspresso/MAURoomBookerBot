@@ -20,10 +20,12 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
-        // debug();
+
         Logger logger = new Logger(Main.class);
         // java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
+
+        if(args.length == 1 && args[0].equals("debug")) debug();
 
         // Schemalagd trådpool?
         logger.info("Skapar trådpool.");
@@ -76,7 +78,7 @@ public class Main {
         int parserDelay = (minutes) >= 10 ? (minutes) - 10 : (minutes); // Om minutes >= 10 -> ta bort 10 minuter istället för att vänta.
         int bookerDelay = (  (23 - now.getHour()) * 60   +   60 - now.getMinute()  ) * 60 - now.getSecond() + 5; // timmar, minut och sekund till sekunder kvar till 00:00:05.
 
-        BookingManager bookingManager = new BookingManager(queue);
+        BookingManager bookingManager = new BookingManager(queue, emailManager);
 
         logger.info("Kör första skrapning av rum efter start.");
         bookKeeper.renew();
@@ -120,8 +122,9 @@ public class Main {
         } catch (AddressException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
-        BookingManager bookingManager = new BookingManager(queue);
+        BookingManager bookingManager = new BookingManager(queue, emailManager);
 
+        bookKeeper.renew();
         emailManager.run();
         bookingManager.emptyQueue();
         bookingManager.bookAllRooms();

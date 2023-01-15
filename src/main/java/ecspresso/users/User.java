@@ -2,7 +2,7 @@ package ecspresso.users;
 
 import java.util.Objects;
 
-public record User(String username, String password){
+public record User(String username, String password) {
     @Override
     public String toString() {
         return username;

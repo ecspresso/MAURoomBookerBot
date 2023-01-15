@@ -34,9 +34,6 @@ public class EmailManager implements Runnable {
         from[0].setPersonal("Rumbokaren");
     }
 
-    public void sendEmail(Address[] to, String subject) {
-        sendEmail(to, subject, "");
-    }
     public void sendEmail(Address[] to, String subject, String message) {
         logger.info("Skickar \"{}\" till {}.", message, to[0]);
         inbox.sendEmail(from, to, subject, message);
@@ -111,18 +108,24 @@ public class EmailManager implements Runnable {
                 for(int i = 0; i < timeslots.length; i++) { // Skopa bokningar för tiderna.
                     if(rooms[i] != null) {
                         logger.info("Skapar en bokning åt {}: {} kl {}.", user, rooms[i], times[i]);
-                        Booking booking = new Booking(user, rooms[i], times[i]);
+                        Booking booking = new Booking(user, rooms[i], times[i], emailMessage);
                         bookings.add(booking);
                     } else {
                         logger.info("Det fanns inget ledigt kl {}", times[i]);
-                        sendEmail(emailMessage.from(), String.format("Det fanns inget ledidgt kl %s i någon byggnad.", times[i]));
+                        sendEmail(emailMessage.from(),
+                                String.format("Kunde inte boka rum kl %s.", times[i]),
+                                String.format("Det fanns inget ledigt rum kl %s i någon byggnad.", times[i])
+                        );
                     }
                 }
 
                 for(Booking booking : bookings) {
                     logger.info("{} har lagts till i kön.", booking);
                     queue.put(booking);
-                    sendEmail(emailMessage.from(), String.format("Kommer att försöka boka %s kl %s", booking.room(), booking.time()));
+                    sendEmail(emailMessage.from(),
+                            String.format("Mottagit förfrågan om bokning (%s %s)", booking.room(), booking.time()),
+                            String.format("Kommer att försöka boka %s kl %s", booking.room(), booking.time())
+                    );
                 }
             }
         }
