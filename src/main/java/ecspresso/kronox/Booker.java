@@ -13,6 +13,7 @@ import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.cookie.Cookie;
 import org.apache.hc.client5.http.cookie.CookieStore;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
@@ -22,6 +23,9 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -45,12 +49,13 @@ public class Booker implements Runnable {
         this.time = booking.time().toString();
 
         LocalDate date = LocalDate.now(ZoneId.of("Europe/Stockholm")).plusDays(1);
-        uri = String.format("https://schema.mau.se/ajax/ajax_resursbokning.jsp?op=boka&datum=%s-%s-%s&id=%s&typ=RESURSER_LOKALER&intervall=%s&moment=kaffe&flik=%s",
+        uri = String.format("https://schema.mau.se/ajax/ajax_resursbokning.jsp?op=boka&datum=%s-%s-%s&id=%s&typ=RESURSER_LOKALER&intervall=%s&moment=%s&flik=%s",
                 date.getYear() - 2000,
                 date.getMonthValue(),
                 date.getDayOfMonth(),
                 booking.room(),
                 booking.time().getTimeslot(),
+                URLEncoder.encode(booking.fact(), StandardCharsets.UTF_8),
                 booking.room().getBuilding().getFlik());
         user = booking.user();
         emailMessage = booking.emailMessage();
@@ -79,7 +84,8 @@ public class Booker implements Runnable {
         HttpClientBuilder httpBuilder = HttpClientBuilder.create().setDefaultCookieStore(cookies);
 
         try(CloseableHttpClient client = httpBuilder.build()) {
-            client.execute(post);
+            BasicHttpClientResponseHandler httpHandler = new BasicHttpClientResponseHandler();
+            client.execute(post, httpHandler);
             List<Cookie> cookieList = cookies.getCookies();
 
             for(int i = 0; i < cookieList.size() && jSessionId == null; i++) {
@@ -94,33 +100,34 @@ public class Booker implements Runnable {
     public void book() {
         logger.info("Bokar!");
         if(jSessionId != null) {
-            HttpGet httpGet = new HttpGet(uri);
-            CookieStore cookies = new BasicCookieStore();
+            HttpGet httpGet;
+            try {
+                httpGet = new HttpGet(uri);
+            } catch(IllegalArgumentException e) {
+                logger.error("Kunde inte skapa uri {}.", uri, e);
+                return;
+            } CookieStore cookies = new BasicCookieStore();
             cookies.addCookie(jSessionId);
             HttpClientBuilder httpBuilder = HttpClientBuilder.create().setDefaultCookieStore(cookies);
 
             try (CloseableHttpClient httpclient = httpBuilder.build()) {
-                try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
-                    Address[] to = emailMessage.from();
+                BasicHttpClientResponseHandler httpHandler = new BasicHttpClientResponseHandler();
+                String content = httpclient.execute(httpGet, httpHandler);
+                Address[] to = emailMessage.from();
 
-                    HttpEntity entity = response.getEntity();
-                    String content = new String(entity.getContent().readAllBytes());
-
-                    if(response.getCode() == 200 && content.equals("OK")) {
-                        emailManager.sendEmail(
-                                to,
-                                String.format("Bokade %s kl %s.", room, time),
-                                "Bokningen lyckades."
-                        );
-                    } else {
-                        emailManager.sendEmail(
-                                to,
-                                String.format("Kunde inte boka %s kl %s.", room, time),
-                                String.format("Kunde inte boka %s kl %s, status kod var %d" +
-                                                "%nSvar från Kronox: %s",
-                                        room, time, response.getCode(), content)
-                        );
-                    }
+                if(content.equals("OK")) {
+                    emailManager.sendEmail(
+                            to,
+                            String.format("Bokade %s kl %s.", room, time),
+                            "Bokningen lyckades."
+                    );
+                } else {
+                    emailManager.sendEmail(
+                            to,
+                            String.format("Kunde inte boka %s kl %s.", room, time),
+                            String.format("Kunde inte boka %s kl %s%nSvar från Kronox: %s",
+                                    room, time, content)
+                    );
                 }
             } catch (IOException e) {
                 logger.error("Kunde inte boka åt {}.", user, e);

@@ -4,6 +4,7 @@ import ecspresso.Logger;
 import ecspresso.bookings.BookKeeper;
 import ecspresso.bookings.Booking;
 import ecspresso.bookings.Queue;
+import ecspresso.catfact.CatFact;
 import ecspresso.mau.Building;
 import ecspresso.mau.Room;
 import ecspresso.mau.Time;
@@ -108,7 +109,7 @@ public class EmailManager implements Runnable {
                 for(int i = 0; i < timeslots.length; i++) { // Skopa bokningar för tiderna.
                     if(rooms[i] != null) {
                         logger.info("Skapar en bokning åt {}: {} kl {}.", user, rooms[i], times[i]);
-                        Booking booking = new Booking(user, rooms[i], times[i], emailMessage);
+                        Booking booking = new Booking(user, rooms[i], times[i], emailMessage, CatFact.getFact().getFact());
                         bookings.add(booking);
                     } else {
                         logger.info("Det fanns inget ledigt kl {}", times[i]);

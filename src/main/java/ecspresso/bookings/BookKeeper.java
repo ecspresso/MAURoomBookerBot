@@ -28,9 +28,11 @@ public class BookKeeper {
     private void findPrebookedRooms() {
         try(final WebClient webClient = new WebClient(BrowserVersion.FIREFOX)) {
             webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
+            webClient.getOptions().setJavaScriptEnabled(false);
             logger.info("Hämtar för alla förbokade rum och fyller listorna.");
             for(Room room : Room.values()) {
-                LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Stockholm")).plusDays(2);
+                LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Stockholm")).plusDays(1);
                 String date = String.format("%s-%s-%s", now.getYear(), now.getMonthValue(), now.getDayOfMonth());
                 String url = String.format("https://schema.mau.se/setup/jsp/Schema.jsp?startDatum=%s&slutDatum=%s&resurser=l.%s", date, date, room);
 

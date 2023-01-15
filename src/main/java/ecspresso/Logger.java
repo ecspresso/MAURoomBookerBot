@@ -28,7 +28,7 @@ public class Logger implements org.slf4j.Logger {
         prop = System.getProperties();
 
         try (FileInputStream fis = new FileInputStream("email.properties")) {
-            logger.info("Läser in email.properties.");
+            // logger.info("Läser in email.properties.");
             prop.load(fis);
             prop.setProperty("mail.store.protocol", "imaps");
             prop.setProperty("mail.imaps.connectiontimeout", "30000");
@@ -52,14 +52,12 @@ public class Logger implements org.slf4j.Logger {
         try {
             InternetAddress kronox = new InternetAddress(prop.getProperty("from"));
             kronox.setPersonal(prop.getProperty("from_name"));
-            InternetAddress[] from = new InternetAddress[1];
-            from[0] = kronox;
+            InternetAddress[] from = new InternetAddress[] {kronox};
 
 
             InternetAddress errorTo = new InternetAddress(prop.getProperty("error_to"));
-            kronox.setPersonal(prop.getProperty("error_to_name"));
-            InternetAddress[] to = new InternetAddress[1];
-            to[0] = kronox;
+            errorTo.setPersonal(prop.getProperty("error_to_name"));
+            InternetAddress[] to = new InternetAddress[] {errorTo};
 
 
             msg.addFrom(from);
@@ -343,8 +341,23 @@ public class Logger implements org.slf4j.Logger {
     @Override
     public void error(String format, Object arg1, Object arg2) {
         logger.error(format, arg1, arg2);
+        String s1, s2;
+        if(arg1 instanceof Throwable) {
+            s1 = extractMessage((Throwable) arg1);
+            format += "\n{}";
+        } else {
+            s1 = arg1.toString();
+        }
+
+        if(arg2 instanceof Throwable) {
+            s2 = extractMessage((Throwable) arg2);
+            format += "\n{}";
+        } else {
+            s2 = arg2.toString();
+        }
+
         StringBuilder sb = new StringBuilder(format);
-        String msg = format.replaceFirst("\\{}", arg1.toString()).replaceFirst("\\{}", arg2.toString());
+        String msg = format.replaceFirst("\\{}", s1).replaceFirst("\\{}", s2);
         sendEmail(msg);
     }
 
@@ -353,7 +366,12 @@ public class Logger implements org.slf4j.Logger {
         logger.error(format, arguments);
         StringBuilder msg = new StringBuilder(format);
         for(Object o : arguments) {
-            String s = o.toString();
+            String s;
+            if(o instanceof Throwable) {
+                s = extractMessage((Throwable) o);
+            } else {
+                s = o.toString();
+            }
             int start = msg.indexOf("{}");
             int end = start + s.length();
             msg.replace(start, end, s);
@@ -365,13 +383,17 @@ public class Logger implements org.slf4j.Logger {
     @Override
     public void error(String subject, Throwable t) {
         logger.error(subject, t);
+        sendEmail(subject, extractMessage(t));
+    }
+
+    private String extractMessage(Throwable t) {
         StringBuilder msg = new StringBuilder().append("Stacktrace:").append("\n");
 
         for (StackTraceElement traceElement : t.getStackTrace())  {
             msg.append("\n\tat ").append(traceElement);
         }
 
-        sendEmail(subject, msg.toString());
+        return msg.toString();
     }
 
     @Override

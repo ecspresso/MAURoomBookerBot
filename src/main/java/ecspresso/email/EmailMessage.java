@@ -6,6 +6,7 @@ import ecspresso.mau.Building;
 import jakarta.mail.Address;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public record EmailMessage(Address[] from, String[] subject) {
     private static final Logger logger = new Logger(EmailMessage.class);
@@ -50,5 +51,10 @@ public record EmailMessage(Address[] from, String[] subject) {
         }
 
         return times;
+    }
+
+    @Override
+    public String toString() {
+        return "EmailMessage{" + "from=" + Arrays.toString(from) + ", subject=" + Arrays.toString(subject) + '}';
     }
 }
