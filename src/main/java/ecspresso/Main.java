@@ -19,7 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 
         Logger logger = new Logger(Main.class);
         // java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
