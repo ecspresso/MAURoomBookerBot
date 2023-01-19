@@ -42,9 +42,8 @@ public class Inbox {
 
         // Koppla upp mot mejl servern.
         session = Session.getInstance(properties);
-        Store store = null;
         try {
-            store = session.getStore();
+            Store store = session.getStore();
             store.connect(username, password);
 
 
@@ -62,6 +61,7 @@ public class Inbox {
                 String[] subject = msg.getSubject().split(" ");
                 // Lägg till i resturvärdet.
                 emailMessages.add(new EmailMessage(from, subject));
+                logger.info("Hittade mejl från {} med rubrik {}.", from, subject);
             }
 
             // Flytta mejlen till papperskorgen.

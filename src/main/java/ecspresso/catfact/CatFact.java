@@ -21,7 +21,7 @@ public class CatFact {
             String response = httpclient.execute(httpPost, httpHandler);
             ObjectMapper objectMapper = new ObjectMapper();
             Fact fact = objectMapper.readValue(response, Fact.class);
-            logger.info("Lite fin fakta om takter är " + fact.getFact());
+            logger.info("Lite fin fakta om katter är " + fact.getFact());
             return fact;
         } catch(IOException e) {
             Fact fact = new Fact();

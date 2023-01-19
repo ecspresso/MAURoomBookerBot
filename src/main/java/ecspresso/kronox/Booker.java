@@ -42,7 +42,7 @@ public class Booker implements Runnable {
     private Cookie jSessionId = null;
     private final Logger logger;
     public Booker(Booking booking, EmailManager emailManager) {
-        logger = new Logger(Booker.class + " (" +  booking + ")");
+        logger = new Logger(Booker.class);
 
         this.emailManager = emailManager;
         this.room = booking.room().toString();
@@ -73,7 +73,7 @@ public class Booker implements Runnable {
     }
 
     public void login() throws IOException, InterruptedException {
-        logger.info("Loggar in.");
+        logger.info("Loggar in åt bokning " + user + ".");
         HttpPost post = new HttpPost("https://schema.mau.se/login_do.jsp");
         List<NameValuePair> nameValuePairs = new ArrayList<>();
         nameValuePairs.add(new BasicNameValuePair("username", user.username()));
@@ -125,7 +125,7 @@ public class Booker implements Runnable {
                     emailManager.sendEmail(
                             to,
                             String.format("Kunde inte boka %s kl %s.", room, time),
-                            String.format("Kunde inte boka %s kl %s%nSvar från Kronox: %s",
+                            String.format("Kunde inte boka %s kl %s. Svar från Kronox: %s",
                                     room, time, content)
                     );
                 }

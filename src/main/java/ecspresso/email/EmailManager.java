@@ -55,7 +55,7 @@ public class EmailManager implements Runnable {
 
         for(EmailMessage emailMessage : emailMessages) {
             logger.info("Bearbetar mejl från {}.", emailMessage.from()[0]);
-            if(!emailMessage.validSubject()) { // Kontrollera att allt är rätt med rubriken (den innehåller all information.
+            if(!emailMessage.validSubject("Första kontroll")) { // Kontrollera att allt är rätt med rubriken (den innehåller all information.
                 // Svara att det inte fungerade om man gjort fel.
                 logger.info("Felaktig rubrik.");
                 sendEmail(emailMessage.from(), "Kunde inte boka.", String.format("Korrekt format: <vem> <var> <när> (<när>).%n<när> ska vara en siffra mellan 1 och 5."));

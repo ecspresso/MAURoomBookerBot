@@ -19,13 +19,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         Logger logger = new Logger(Main.class);
         // java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
-
-        if(args.length == 1 && args[0].equals("debug")) debug();
 
         // Schemalagd trådpool?
         logger.info("Skapar trådpool.");
@@ -77,6 +75,8 @@ public class Main {
         int minutes = 12 - now.getMinute()%10; // Hur många minuter det är kvar till nästa XX:X2.
         int parserDelay = (minutes) >= 10 ? (minutes) - 10 : (minutes); // Om minutes >= 10 -> ta bort 10 minuter istället för att vänta.
         int bookerDelay = (  (23 - now.getHour()) * 60   +   60 - now.getMinute()  ) * 60 - now.getSecond() + 5; // timmar, minut och sekund till sekunder kvar till 00:00:05.
+        int emptyQueueDelay = bookerDelay - 120;
+        int renewDelay = bookerDelay + 1200;
 
         BookingManager bookingManager = new BookingManager(queue, emailManager);
 
@@ -86,49 +86,15 @@ public class Main {
         logger.info("Schemalägger parser. Nästa körning om {} minuter.", parserDelay);
         scheduler.scheduleAtFixedRate(emailManager, parserDelay, 10, TimeUnit.MINUTES);
 
-        // Starta 5 minuter innan, varje 24 timmar.
-        logger.info("Schemalägger tömning av kön. Nästa körning om {} sekunder (~{} minuter (~{} timmar)).", bookerDelay - 300, (bookerDelay - 300)/60, (bookerDelay - 300)/60/60);
-        scheduler.scheduleAtFixedRate(bookingManager::emptyQueue, bookerDelay - 300, 86400, TimeUnit.SECONDS);
+        // Starta 2 minuter innan, varje 24 timmar.
+        logger.info("Schemalägger tömning av kön. Nästa körning om {} sekunder (~{} minuter (~{} timmar)).", emptyQueueDelay, emptyQueueDelay/60, emptyQueueDelay/60/60);
+        scheduler.scheduleAtFixedRate(bookingManager::emptyQueue, bookerDelay - 120, 86400, TimeUnit.SECONDS);
 
         logger.info("Schemalägger körning av webbläsare. Nästa körning om {} sekunder (~{} minuter (~{} timmar)).", bookerDelay, bookerDelay/60, bookerDelay/60/60);
         scheduler.scheduleAtFixedRate(bookingManager::bookAllRooms, bookerDelay, 86400, TimeUnit.SECONDS);
 
-        logger.info("Schemalägger skrapning av alla rummen. Nästa körning om {} sekunder (~{} minuter (~{} timmar)).", bookerDelay + 3600,  (bookerDelay + 3600)/60, (bookerDelay + 3600)/60/60);
-        scheduler.scheduleAtFixedRate(bookKeeper::renew, bookerDelay + 3600, 86400, TimeUnit.SECONDS);
-    }
-
-    private static void debug() {
-        Queue queue = new Queue();
-        UserFilesHandler userFilesHandler = new UserFilesHandler("users/");
-        Properties prop = new Properties();
-        try (FileInputStream fis = new FileInputStream("email.properties")) {
-            prop.load(fis);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Inbox inbox = new Inbox.Builder()
-            .setUsername(prop.getProperty("username"))
-            .setPassword(prop.getProperty("password"))
-            .setServerIn(prop.getProperty("server_in"))
-            .setPortIn(prop.getProperty("port_in"))
-            .setServerOut(prop.getProperty("server_out"))
-            .setPortOut(prop.getProperty("port_out"))
-            .build();
-
-        BookKeeper bookKeeper = new BookKeeper();
-        EmailManager emailManager = null;
-        try {
-            emailManager = new EmailManager(inbox, queue, userFilesHandler, bookKeeper);
-        } catch (AddressException | UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        BookingManager bookingManager = new BookingManager(queue, emailManager);
-
-        bookKeeper.renew();
-        emailManager.run();
-        bookingManager.emptyQueue();
-        bookingManager.bookAllRooms();
-
-        System.exit(0);
+        // Kör 20 minuter efter bokningarna
+        logger.info("Schemalägger skrapning av alla rummen. Nästa körning om {} sekunder (~{} minuter (~{} timmar)).", renewDelay, renewDelay/60, renewDelay/60/60);
+        scheduler.scheduleAtFixedRate(bookKeeper::renew, renewDelay, 86400, TimeUnit.SECONDS);
     }
 }

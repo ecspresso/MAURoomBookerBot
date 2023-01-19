@@ -32,7 +32,7 @@ public class BookKeeper {
             webClient.getOptions().setJavaScriptEnabled(false);
             logger.info("Hämtar för alla förbokade rum och fyller listorna.");
             for(Room room : Room.values()) {
-                LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Stockholm")).plusDays(1);
+                LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Stockholm")).plusDays(2);
                 String date = String.format("%s-%s-%s", now.getYear(), now.getMonthValue(), now.getDayOfMonth());
                 String url = String.format("https://schema.mau.se/setup/jsp/Schema.jsp?startDatum=%s&slutDatum=%s&resurser=l.%s", date, date, room);
 
@@ -73,10 +73,10 @@ public class BookKeeper {
                     }
                     setBooked(room, timeStart, mau);
 
-                    LocalTime ten = LocalTime.parse("10:16");
-                    LocalTime thirteen = LocalTime.parse("13:16");
-                    LocalTime fifteen = LocalTime.parse("15:16");
-                    LocalTime seventeen = LocalTime.parse("17:16");
+                    LocalTime ten = LocalTime.parse("10:15");
+                    LocalTime thirteen = LocalTime.parse("13:15");
+                    LocalTime fifteen = LocalTime.parse("15:15");
+                    LocalTime seventeen = LocalTime.parse("17:15");
 
 
                     if (end.isAfter(ten) && timeStart.getTime().isBefore(ten)) {

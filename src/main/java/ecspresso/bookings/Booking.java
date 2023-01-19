@@ -8,12 +8,6 @@ import ecspresso.users.User;
 public record Booking(User user, Room room, Time time, EmailMessage emailMessage, String fact) {
     @Override
     public String toString() {
-        return String.format("Booking:%n" +
-                "User: %s%n" +
-                "Room: %s%n" +
-                "Time: %s%n" +
-                "From: %s%n" +
-                "Fact: %n%s",
-                user, room, time, emailMessage, fact);
+        return String.format("User: %s | Room: %s | Time: %s", user, room, time);
     }
 }
