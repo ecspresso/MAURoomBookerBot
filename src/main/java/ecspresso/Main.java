@@ -71,29 +71,32 @@ public class Main {
         // Kolla inkorgen
         // Kör varje 5:e minut, start :02.
         logger.info("Beräknar alla tider.");
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Stockholm"));
-        int minutes = 12 - now.getMinute()%10; // Hur många minuter det är kvar till nästa XX:X2.
-        int parserDelay = (minutes) >= 10 ? (minutes) - 10 : (minutes); // Om minutes >= 10 -> ta bort 10 minuter istället för att vänta.
-        int bookerDelay = (  (23 - now.getHour()) * 60   +   60 - now.getMinute()  ) * 60 - now.getSecond() + 5; // timmar, minut och sekund till sekunder kvar till 00:00:05.
-        int emptyQueueDelay = bookerDelay - 120;
-        int renewDelay = bookerDelay + 1200;
 
         BookingManager bookingManager = new BookingManager(queue, emailManager);
 
         logger.info("Kör första skrapning av rum efter start.");
         bookKeeper.renew();
 
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Stockholm"));
+        int minutes = 12 - now.getMinute()%10; // Hur många minuter det är kvar till nästa XX:X2.
+        int parserDelay = (minutes) >= 10 ? (minutes) - 10 : (minutes); // Om minutes >= 10 -> ta bort 10 minuter istället för att vänta.
         logger.info("Schemalägger parser. Nästa körning om {} minuter.", parserDelay);
         scheduler.scheduleAtFixedRate(emailManager, parserDelay, 10, TimeUnit.MINUTES);
 
         // Starta 2 minuter innan, varje 24 timmar.
+        now = LocalDateTime.now(ZoneId.of("Europe/Stockholm"));
+        int bookerDelay = (  (23 - now.getHour()) * 60   +   60 - now.getMinute()  ) * 60 - now.getSecond() + 5; // timmar, minut och sekund till sekunder kvar till 00:00:05.
+        int emptyQueueDelay = bookerDelay - 120;
         logger.info("Schemalägger tömning av kön. Nästa körning om {} sekunder (~{} minuter (~{} timmar)).", emptyQueueDelay, emptyQueueDelay/60, emptyQueueDelay/60/60);
         scheduler.scheduleAtFixedRate(bookingManager::emptyQueue, bookerDelay - 120, 86400, TimeUnit.SECONDS);
 
+        now = LocalDateTime.now(ZoneId.of("Europe/Stockholm"));
+        bookerDelay = (  (23 - now.getHour()) * 60   +   60 - now.getMinute()  ) * 60 - now.getSecond() + 5; // timmar, minut och sekund till sekunder kvar till 00:00:05.
         logger.info("Schemalägger körning av webbläsare. Nästa körning om {} sekunder (~{} minuter (~{} timmar)).", bookerDelay, bookerDelay/60, bookerDelay/60/60);
         scheduler.scheduleAtFixedRate(bookingManager::bookAllRooms, bookerDelay, 86400, TimeUnit.SECONDS);
 
         // Kör 20 minuter efter bokningarna
+        int renewDelay = bookerDelay + 1200;
         logger.info("Schemalägger skrapning av alla rummen. Nästa körning om {} sekunder (~{} minuter (~{} timmar)).", renewDelay, renewDelay/60, renewDelay/60/60);
         scheduler.scheduleAtFixedRate(bookKeeper::renew, renewDelay, 86400, TimeUnit.SECONDS);
     }

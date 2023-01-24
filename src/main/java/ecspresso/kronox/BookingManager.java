@@ -1,6 +1,7 @@
 package ecspresso.kronox;
 
 import ecspresso.Logger;
+import ecspresso.bookings.Booking;
 import ecspresso.bookings.Queue;
 import ecspresso.email.EmailManager;
 
@@ -21,7 +22,10 @@ public class BookingManager {
         synchronized(queue) {
             logger.info("Tömmer kön på bokningar.");
             while(!queue.isEmpty()) {
-                bookers.add(new Thread(new Booker(queue.get(), emailManager)));
+                Booking booking = queue.get();
+                Thread thread = new Thread(new Booker(booking, emailManager));
+                thread.setName(String.format("T_%s_%s_%s", booking.user(), booking.room(), booking.time()));
+                bookers.add(thread);
             }
         }
     }
